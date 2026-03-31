@@ -1,0 +1,353 @@
+.loading {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 60vh;
+  color: var(--muted);
+}
+
+.spinner {
+  width: 40px;
+  height: 40px;
+  border: 3px solid var(--border);
+  border-top-color: var(--accent);
+  border-radius: 50%;
+  animation: spin 0.8s linear infinite;
+}
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Hero */
+.hero {
+  position: relative;
+  min-height: 85vh;
+  display: flex;
+  align-items: flex-end;
+  overflow: hidden;
+}
+
+.backdrop {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  filter: brightness(0.4);
+}
+
+.heroInner {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  align-items: flex-end;
+  gap: 48px;
+  padding: 80px 80px 80px;
+  width: 100%;
+}
+
+.poster {
+  flex-shrink: 0;
+  width: 220px;
+  position: relative;
+}
+
+.poster img {
+  width: 220px;
+  border-radius: 12px;
+  box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+}
+
+.posterProgress {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 0 0 12px 12px;
+  overflow: hidden;
+}
+
+.posterProgressFill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.5s;
+}
+
+.details {
+  flex: 1;
+  max-width: 680px;
+}
+
+.genres {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+}
+
+.genre {
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: rgba(232,160,32,0.12);
+  color: var(--accent);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: 'DM Mono', monospace;
+}
+
+.title {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 60px;
+  line-height: 0.95;
+  letter-spacing: 2px;
+  margin-bottom: 28px;
+  text-shadow: 0 4px 40px rgba(0,0,0,0.4);
+}
+
+.stats {
+  display: flex;
+  gap: 32px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.stat {}
+.statLabel {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 4px;
+  font-family: 'DM Mono', monospace;
+}
+
+.statValue {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--text);
+  font-family: 'DM Mono', monospace;
+}
+
+.accent { color: var(--accent); }
+
+.desc {
+  font-size: 14px;
+  color: var(--text2);
+  line-height: 1.7;
+  margin-bottom: 28px;
+  max-width: 560px;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+.btnPlay {
+  background: var(--accent);
+  color: #000;
+  border: none;
+  padding: 13px 28px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: background 0.2s, transform 0.15s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.btnPlay:hover {
+  background: #f0ab28;
+  transform: scale(1.03);
+}
+
+.bookmarkWrap {
+  position: relative;
+  width: 44px;
+  height: 44px;
+}
+
+.bookmarkWrap > * {
+  position: static !important;
+  width: 44px !important;
+  height: 44px !important;
+}
+
+.btnBack {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--text2);
+  padding: 13px 20px;
+  border-radius: 8px;
+  font-size: 14px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.btnBack:hover { border-color: var(--muted); }
+
+.starWrap {
+  padding-top: 4px;
+}
+
+/* Player */
+.playerWrap {
+  padding: 0 80px 60px;
+  background: var(--bg2);
+}
+
+.player {
+  aspect-ratio: 16/9;
+  max-height: 540px;
+  background: var(--bg3);
+  border-radius: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  border: 1px solid var(--border);
+  transition: border-color 0.2s;
+  overflow: hidden;
+}
+
+.player:hover { border-color: rgba(232,160,32,0.3); }
+
+.playerInner {
+  text-align: center;
+  color: var(--muted);
+}
+
+.playerInner p {
+  font-size: 14px;
+  margin-top: 12px;
+}
+
+.playCircle {
+  width: 72px;
+  height: 72px;
+  background: rgba(232,160,32,0.15);
+  border: 2px solid var(--accent);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 26px;
+  color: var(--accent);
+  margin: 0 auto;
+  transition: background 0.2s;
+}
+
+.player:hover .playCircle {
+  background: rgba(232,160,32,0.25);
+}
+
+.resumeHint {
+  margin-top: 8px;
+  font-size: 12px;
+  color: var(--accent);
+  font-family: 'DM Mono', monospace;
+}
+
+.trailerBox {
+  border-radius: 14px;
+  overflow: hidden;
+  border: 1px solid var(--border);
+}
+
+.trailerHeader {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 16px;
+  background: var(--bg3);
+  font-size: 13px;
+  color: var(--muted);
+  font-weight: 600;
+}
+
+.closeTrailer {
+  background: none;
+  border: none;
+  color: var(--muted);
+  cursor: pointer;
+  font-size: 13px;
+  padding: 4px 8px;
+  transition: color 0.2s;
+}
+
+.closeTrailer:hover { color: var(--text); }
+
+.iframe {
+  width: 100%;
+  aspect-ratio: 16/9;
+  max-height: 500px;
+  border: none;
+  display: block;
+}
+
+.trailerProgressBar {
+  height: 4px;
+  background: var(--bg3);
+}
+
+.trailerProgressFill {
+  height: 100%;
+  background: var(--accent);
+  transition: width 0.5s linear;
+}
+
+/* Content section */
+.content {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 60px 80px;
+}
+
+.section {
+  margin-bottom: 60px;
+}
+
+.sectionTitle {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 1.5px;
+  color: var(--text);
+  margin-bottom: 24px;
+}
+
+.relatedGrid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 18px;
+}
+
+@media (max-width: 900px) {
+  .heroInner { flex-direction: column; padding: 40px 24px 40px; }
+  .poster { width: 140px; }
+  .poster img { width: 140px; }
+  .title { font-size: 40px; }
+  .playerWrap { padding: 0 24px 40px; }
+  .content { padding: 40px 24px; }
+}
+
+/* ── Type tag ── */
+.typeTag {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  background: rgba(255,255,255,0.1);
+  color: var(--text2);
+  padding: 4px 10px;
+  border-radius: 4px;
+  font-family: 'DM Mono', monospace;
+}

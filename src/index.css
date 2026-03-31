@@ -1,0 +1,86 @@
+/* ============================================================
+   index.css — глобальные стили и CSS-переменные тем
+   Все компоненты используют эти переменные через var(--...)
+   ============================================================ */
+
+/* --- ТЁМНАЯ ТЕМА (по умолчанию) --- */
+:root {
+  --bg:       #080A0F;
+  --bg2:      #0E1118;
+  --bg3:      #141820;
+  --card:     #111520;
+  --border:   rgba(255, 255, 255, 0.07);
+  --accent:   #E8A020;
+  --accent2:  #FF6B35;
+  --text:     #F0EDE8;
+  --text2:    rgba(240, 237, 232, 0.65);
+  --muted:    #6E7280;
+  --subtle:   #252A35;
+  --error:    #ff6060;
+}
+
+/* --- СВЕТЛАЯ ТЕМА --- */
+/* Класс .light вешается на <html> через ThemeContext */
+html.light {
+  --bg:       #F5F4F0;
+  --bg2:      #EDECE8;
+  --bg3:      #E5E3DE;
+  --card:     #FFFFFF;
+  --border:   rgba(0, 0, 0, 0.08);
+  --accent:   #C87800;
+  --accent2:  #E05020;
+  --text:     #1A1714;
+  --text2:    rgba(26, 23, 20, 0.65);
+  --muted:    #8A8070;
+  --subtle:   #D8D6D0;
+  --error:    #cc0000;
+}
+
+/* --- СБРОС И БАЗА --- */
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background-color: var(--bg);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  transition: background-color 0.3s ease, color 0.3s ease;
+  /* transition нужен чтобы смена темы была плавной */
+}
+
+/* Убираем стандартные стили у ссылок */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Убираем стандартные стили у кнопок */
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
+
+/* Убираем стандартные стили у списков */
+ul, ol {
+  list-style: none;
+}
+
+img {
+  max-width: 100%;
+  display: block;
+}
+
+/* Контент сдвигается вниз на высоту фиксированного Navbar */
+main {
+  padding-top: 68px;
+  min-height: calc(100vh - 68px);
+}

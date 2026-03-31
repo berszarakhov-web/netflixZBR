@@ -1,0 +1,285 @@
+.page {
+  padding: 48px 80px 80px;
+}
+
+.layout {
+  display: grid;
+  grid-template-columns: 280px 1fr;
+  gap: 48px;
+  align-items: start;
+}
+
+/* ===== КАРТОЧКА ЮЗЕРА ===== */
+.card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 36px 28px;
+  text-align: center;
+  position: sticky;
+  top: 88px;
+}
+
+.avatar {
+  width: 90px; height: 90px;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 100%);
+  border-radius: 50%;
+  margin: 0 auto 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 32px;
+  font-weight: 700;
+  color: #000;
+  font-family: 'Bebas Neue', sans-serif;
+  letter-spacing: 2px;
+  box-shadow: 0 8px 30px rgba(232,160,32,0.25);
+}
+
+.name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 26px;
+  letter-spacing: 2px;
+  margin-bottom: 6px;
+}
+
+.email {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 24px;
+  word-break: break-all;
+}
+
+.stats {
+  display: flex;
+  justify-content: center;
+  gap: 28px;
+  padding: 20px 0;
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 24px;
+}
+
+.stat { text-align: center; }
+
+.statNum {
+  font-family: 'DM Mono', monospace;
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.statLbl {
+  font-size: 10px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-top: 4px;
+}
+
+.btnLogout {
+  width: 100%;
+  background: rgba(255,96,96,0.08);
+  color: var(--error);
+  border: 1px solid rgba(255,96,96,0.2);
+  padding: 10px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+  font-family: 'DM Sans', sans-serif;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.btnLogout:hover { background: rgba(255,96,96,0.16); }
+
+/* ===== ЗАКЛАДКИ ===== */
+.sectionTitle {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 28px;
+  letter-spacing: 2px;
+  margin-bottom: 28px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.count {
+  font-size: 14px;
+  font-family: 'DM Mono', monospace;
+  color: var(--accent);
+  background: rgba(232,160,32,0.12);
+  border: 1px solid rgba(232,160,32,0.25);
+  padding: 2px 10px;
+  border-radius: 20px;
+  font-weight: 600;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(165px, 1fr));
+  gap: 20px;
+}
+
+.empty {
+  text-align: center;
+  padding: 60px 20px;
+  color: var(--muted);
+}
+
+.emptyIcon {
+  font-size: 48px;
+  margin-bottom: 16px;
+}
+
+.empty p { font-size: 15px; margin-bottom: 8px; }
+
+.hint { font-size: 13px; }
+
+/* ===== АДАПТИВ ===== */
+@media (max-width: 768px) {
+  .page { padding: 24px 16px 60px; }
+  .layout {
+    grid-template-columns: 1fr;
+  }
+  .card {
+    position: static;
+  }
+}
+
+/* ── Tabs ── */
+.tabs {
+  display: flex;
+  gap: 4px;
+  border-bottom: 1px solid var(--border);
+  margin-bottom: 28px;
+}
+
+.tab {
+  background: none;
+  border: none;
+  padding: 10px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -1px;
+  transition: color 0.2s, border-color 0.2s;
+  font-family: 'DM Sans', sans-serif;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.tab:hover { color: var(--text); }
+
+.tabActive {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.tabCount {
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  background: var(--subtle);
+  padding: 1px 6px;
+  border-radius: 10px;
+  color: var(--muted);
+}
+
+.tabActive .tabCount {
+  background: rgba(232,160,32,0.12);
+  color: var(--accent);
+}
+
+/* ── CardWrap for ratings ── */
+.cardWrap { position: relative; }
+
+.ratingBadge {
+  text-align: center;
+  font-size: 13px;
+  color: var(--accent);
+  padding: 4px 0 8px;
+  letter-spacing: 1px;
+}
+
+/* ── Edit Name ── */
+.nameRow {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.editBtn {
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 2px 4px;
+  transition: color 0.2s;
+}
+
+.editBtn:hover { color: var(--accent); }
+
+.editWrap {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.nameInput {
+  background: var(--bg3);
+  border: 1px solid rgba(232,160,32,0.4);
+  color: var(--text);
+  padding: 8px 12px;
+  border-radius: 8px;
+  font-size: 15px;
+  font-family: 'DM Sans', sans-serif;
+  text-align: center;
+  outline: none;
+}
+
+.saveBtn {
+  background: var(--accent);
+  border: none;
+  color: #000;
+  padding: 8px;
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 12px;
+  cursor: pointer;
+}
+
+.main {}
+
+/* ─── Новые стили для редактирования имени ─── */
+.editBtns {
+  display: flex;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.cancelBtn {
+  background: none;
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 6px 14px;
+  border-radius: 8px;
+  font-size: 13px;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+.cancelBtn:hover { border-color: var(--muted); }
+
+.saveMsg {
+  font-size: 12px;
+  color: #4caf50;
+  text-align: center;
+  margin: 6px 0;
+  font-weight: 600;
+}

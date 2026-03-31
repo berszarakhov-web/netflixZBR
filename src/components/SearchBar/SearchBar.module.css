@@ -1,0 +1,143 @@
+.wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.focused .input {
+  border-color: rgba(232, 160, 32, 0.5);
+  box-shadow: 0 0 0 3px rgba(232, 160, 32, 0.08);
+}
+
+.icon {
+  position: absolute;
+  left: 12px;
+  font-size: 17px;
+  pointer-events: none;
+  color: var(--muted);
+  z-index: 1;
+}
+
+.input {
+  width: 100%;
+  background: var(--bg3);
+  border: 1px solid var(--border);
+  color: var(--text);
+  padding: 10px 36px 10px 36px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-family: 'DM Sans', sans-serif;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.input::placeholder {
+  color: var(--muted);
+}
+
+.clear {
+  position: absolute;
+  right: 10px;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font-size: 12px;
+  cursor: pointer;
+  padding: 4px;
+  transition: color 0.2s;
+  z-index: 1;
+}
+
+.clear:hover { color: var(--text); }
+
+/* ── Dropdown ── */
+.dropdown {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  z-index: 999;
+  box-shadow: 0 20px 60px rgba(0,0,0,0.6);
+  animation: dropIn 0.15s ease;
+}
+
+@keyframes dropIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.suggestion {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  cursor: pointer;
+  transition: background 0.15s;
+  border-bottom: 1px solid var(--border);
+}
+
+.suggestion:last-of-type { border-bottom: none; }
+
+.suggestion:hover {
+  background: rgba(232, 160, 32, 0.06);
+}
+
+.suggPoster {
+  width: 40px;
+  height: 56px;
+  object-fit: cover;
+  border-radius: 5px;
+  flex-shrink: 0;
+  background: var(--subtle);
+}
+
+.suggInfo {
+  flex: 1;
+  min-width: 0;
+}
+
+.suggTitle {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  margin-bottom: 4px;
+}
+
+.suggTitle mark {
+  background: none;
+  color: var(--accent);
+}
+
+.suggMeta {
+  display: flex;
+  gap: 8px;
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.suggArrow {
+  color: var(--muted);
+  font-size: 14px;
+  opacity: 0;
+  transition: opacity 0.15s, transform 0.15s;
+}
+
+.suggestion:hover .suggArrow {
+  opacity: 1;
+  transform: translateX(3px);
+}
+
+.hint {
+  padding: 8px 14px;
+  font-size: 11px;
+  color: var(--muted);
+  font-style: italic;
+  background: var(--bg3);
+}
