@@ -48,28 +48,62 @@ app.use('/api/admin',     adminRoutes)
 
 // ── Раздача статических файлов фронтенда ─────────────────────────
 const frontendBuildPath = path.join(__dirname, '../frontend/dist')
-app.use(express.static(frontendBuildPath))
+const fs = require('fs')
+
+// Проверка наличия dist папки при старте
+const distExists = fs.existsSync(frontendBuildPath)
+if (distExists) {
+  console.log(`✅ Frontend dist найден: ${frontendBuildPath}`)
+  app.use(express.static(frontendBuildPath))
+} else {
+  console.warn(`⚠️  Frontend dist не найден: ${frontendBuildPath}`)
+}
 
 // ── Обслуживание React SPA (catch-all для React Router) ──────────
 app.get('*', (req, res) => {
+  if (!distExists) {
+    return res.status(503).json({
+      message: 'Frontend не собран. Выполните: npm run build',
+      path: frontendBuildPath
+    })
+  }
+
   const indexPath = path.join(frontendBuildPath, 'index.html')
-  res.sendFile(indexPath, (err) => {
-    if (err) {
-      console.error('Frontend dist не найден:', indexPath)
-      res.status(500).json({ message: 'Frontend не собран' })
-    }
-  })
+  
+  // Проверяем, существует ли файл перед отправкой
+  if (!fs.existsSync(indexPath)) {
+    console.error(`❌ index.html не найден в ${indexPath}`)
+    return res.status(503).json({
+      message: 'Frontend не собран корректно. Отсутствует index.html',
+      expected: indexPath
+    })
+  }
+
+  res.sendFile(indexPath)
 })
 
 // ── Глобальная обработка ошибок ──────────────────────────────────
 app.use((err, _req, res, _next) => {
-  console.error('Необработанная ошибка:', err.stack)
-  res.status(500).json({ message: 'Внутренняя ошибка сервера' })
+  console.error('❌ Необработанная ошибка:', {
+    message: err.message,
+    stack: err.stack,
+    code: err.code
+  })
+  res.status(err.status || 500).json({
+    message: process.env.NODE_ENV === 'production' 
+      ? 'Внутренняя ошибка сервера'
+      : err.message,
+    error: process.env.NODE_ENV === 'development' ? err : {}
+  })
 })
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`\n🚀 Server running on port: ${PORT}`);
-  console.log(`📊 Admin API: http://0.0.0.0:${PORT}/api/admin/stats`);
+  console.log(`\n${'='.repeat(60)}`)
+  console.log(`🚀 Server running on port: ${PORT}`)
+  console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`)
+  console.log(`📂 Frontend build path: ${frontendBuildPath}`)
+  console.log(`✅ Frontend dist exists: ${distExists}`)
+  console.log(`${'='.repeat(60)}\n`)
 });

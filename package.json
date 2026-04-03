@@ -6,8 +6,8 @@
   "scripts": {
     "dev": "vite",
     "build": "cd project/frontend && npm install && npm run build && cd ../../",
-    "start": "npm run build:backend && node project/backend/server.js",
     "build:backend": "cd project/backend && npm install",
+    "start": "npm run build && npm run build:backend && node project/backend/server.js",
     "lint": "eslint .",
     "preview": "vite preview"
   },

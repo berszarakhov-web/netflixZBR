@@ -4,8 +4,8 @@ services:
     env: node
     plan: starter
     region: singapore
-    buildCommand: npm run build
-    startCommand: npm start
+    buildCommand: npm run build && npm run build:backend
+    startCommand: node project/backend/server.js
     envVars:
       - key: NODE_ENV
         value: production
