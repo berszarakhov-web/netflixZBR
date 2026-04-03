@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: timeline-app
+    env: node
+    plan: starter  # Бесплатный план
+    buildCommand: npm run build
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        scope: runtime
+        value: 10000
+      - key: MONGO_URI
+        scope: secret  # Добавить через UI Render
+      - key: JWT_SECRET
+        scope: secret  # Добавить через UI Render
+      - key: FRONTEND_URL
+        sync: false  # Будет установлено автоматически

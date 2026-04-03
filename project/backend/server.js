@@ -1,6 +1,7 @@
 require('dotenv').config()
 const express   = require('express')
 const cors      = require('cors')
+const path      = require('path')
 const connectDB = require('./config/db')
 
 const userRoutes     = require('./routes/userRoutes')
@@ -16,12 +17,22 @@ const app = express()
 connectDB()
 
 // ── Middleware ────────────────────────────────────────────────────
+const allowedOrigins = [
+  'http://localhost:5173',
+  'http://localhost:3000',
+  process.env.FRONTEND_URL || ''
+].filter(Boolean)
+
 app.use(cors({
-  origin: ['http://localhost:5173', 'http://localhost:3000'],
+  origin: allowedOrigins,
   credentials: true,
 }))
 app.use(express.json({ limit: '5mb' }))  // 5mb — для base64 аватаров
 app.use(express.urlencoded({ extended: true }))
+
+// ── Раздача статических файлов фронтенда ─────────────────────────
+const frontendBuildPath = path.join(__dirname, '../frontend/dist')
+app.use(express.static(frontendBuildPath))
 
 // ── Логирование запросов (только в dev) ──────────────────────────
 if (process.env.NODE_ENV !== 'production') {
@@ -38,6 +49,14 @@ app.use('/api/bookmarks', bookmarkRoutes)
 app.use('/api/comments',  commentRoutes)
 app.use('/api/ratings',   ratingRoutes)
 app.use('/api/admin',     adminRoutes)
+
+// ── Обслуживание React SPA ───────────────────────────────────────
+app.get('*', (req, res) => {
+  // Если это не API маршрут, отправить index.html для React Router
+  if (!req.path.startsWith('/api')) {
+    res.sendFile(path.join(frontendBuildPath, 'index.html'))
+  }
+})
 
 // ── Проверочный маршрут ──────────────────────────────────────────
 app.get('/', (_req, res) => {
