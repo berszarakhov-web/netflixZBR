@@ -90,7 +90,7 @@ function Home() {
                 ▶ Смотреть
               </button>
               <div className={styles.bookmarkWrap}>
-                <BookmarkButton movieId={hero.id} />
+                <BookmarkButton movieId={hero.id} movieTitle={hero.title} />
               </div>
             </div>
           </div>

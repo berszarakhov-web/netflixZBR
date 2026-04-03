@@ -8,6 +8,8 @@ import { BookmarksProvider } from './context/BookmarksContext'
 import { WatchHistoryProvider } from './context/WatchHistoryContext'
 import { RatingsProvider } from './context/RatingsContext'
 import { CommentsProvider } from './context/CommentsContext'
+import { ProfileProvider } from './context/ProfileContext'
+import { ToastProvider } from './components/Toast/Toast'
 import './index.css'
 
 ReactDOM.createRoot(document.getElementById('root')).render(
@@ -15,15 +17,19 @@ ReactDOM.createRoot(document.getElementById('root')).render(
     <BrowserRouter>
       <ThemeProvider>
         <AuthProvider>
-          <BookmarksProvider>
-            <RatingsProvider>
-              <WatchHistoryProvider>
-                <CommentsProvider>
-                  <App />
-                </CommentsProvider>
-              </WatchHistoryProvider>
-            </RatingsProvider>
-          </BookmarksProvider>
+          <ToastProvider>
+            <ProfileProvider>
+              <BookmarksProvider>
+                <RatingsProvider>
+                  <WatchHistoryProvider>
+                    <CommentsProvider>
+                      <App />
+                    </CommentsProvider>
+                  </WatchHistoryProvider>
+                </RatingsProvider>
+              </BookmarksProvider>
+            </ProfileProvider>
+          </ToastProvider>
         </AuthProvider>
       </ThemeProvider>
     </BrowserRouter>

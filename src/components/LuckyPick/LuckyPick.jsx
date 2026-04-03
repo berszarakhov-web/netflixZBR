@@ -1,74 +1,81 @@
-// LuckyPick.jsx — карточная рулетка случайного выбора
-// Полностью переработана: вместо прокручивающейся ленты —
-// анимированные карточки с эффектом "тасования колоды"
+// LuckyPick.jsx — карточная рулетка случайного выбора (FIXED)
+// Исправлен баг бесконечного кручения: winner фиксируется ДО запуска tick(),
+// timerRef хранит ID через closure, cleanup при unmount
 
 import { useState, useRef, useCallback, useEffect } from 'react'
 import { useNavigate } from 'react-router-dom'
 import styles from './LuckyPick.module.css'
 
-const SHUFFLE_ROUNDS = 6   // кол-во "мельканий" перед финалом
-const INTERVAL_MS   = 120  // мс между сменой карточек
-const SLOWDOWN_STEP = 35   // нарастание задержки при торможении
+const BASE_INTERVAL  = 80    // начальная скорость (мс)
+const TOTAL_FRAMES   = 28    // сколько кадров до победителя
+const SLOWDOWN_START = 10    // с какого кадра с конца начинать замедление
 
 function LuckyPick({ movies }) {
-  const navigate   = useNavigate()
-  const timerRef   = useRef(null)
+  const navigate  = useNavigate()
+  const timerRef  = useRef(null)
+  const mountedRef = useRef(true)
 
-  const [spinning,  setSpinning]  = useState(false)
-  const [current,   setCurrent]   = useState(null)   // карточка "на столе" во время кручения
-  const [chosen,    setChosen]    = useState(null)   // финальный победитель
-  const [flashIdx,  setFlashIdx]  = useState(0)      // индекс текущей карточки в shuffle
+  const [spinning, setSpinning] = useState(false)
+  const [current,  setCurrent]  = useState(null)
+  const [chosen,   setChosen]   = useState(null)
 
-  // Инициализируем первую карточку чтобы не было пустоты
+  // Начальная карточка
   useEffect(() => {
-    if (movies.length > 0 && !current && !chosen) {
+    if (movies.length > 0) {
       setCurrent(movies[Math.floor(Math.random() * movies.length)])
     }
   }, [movies])
 
-  const clearAllTimers = () => {
-    if (timerRef.current) clearTimeout(timerRef.current)
-  }
+  // Cleanup при unmount
+  useEffect(() => {
+    mountedRef.current = true
+    return () => {
+      mountedRef.current = false
+      if (timerRef.current) clearTimeout(timerRef.current)
+    }
+  }, [])
 
   const handleSpin = useCallback(() => {
     if (spinning || movies.length === 0) return
-    clearAllTimers()
+    if (timerRef.current) clearTimeout(timerRef.current)
 
-    // Перемешиваем пул
-    const shuffled = [...movies].sort(() => Math.random() - 0.5)
-    const winner = shuffled[Math.floor(Math.random() * shuffled.length)]
+    // Фиксируем победителя ДО начала анимации
+    const pool   = [...movies].sort(() => Math.random() - 0.5)
+    const winner = pool[Math.floor(Math.random() * pool.length)]
 
     setChosen(null)
     setSpinning(true)
 
-    let step = 0
-    const totalSteps = SHUFFLE_ROUNDS * shuffled.length + Math.floor(Math.random() * 5) + 3
+    let frame = 0
 
-    const tick = (delay) => {
-      timerRef.current = setTimeout(() => {
-        step++
-        const idx = step % shuffled.length
-        setCurrent(shuffled[idx])
-        setFlashIdx(idx)
+    const tick = () => {
+      if (!mountedRef.current) return
 
-        if (step >= totalSteps) {
-          // Финал — показываем победителя
-          setCurrent(winner)
-          setChosen(winner)
-          setSpinning(false)
-          return
-        }
+      frame++
 
-        // Постепенное замедление в последних 10 шагах
-        const remaining = totalSteps - step
-        const newDelay = remaining <= 10
-          ? delay + SLOWDOWN_STEP + remaining * 8
-          : delay
-        tick(newDelay)
-      }, delay)
+      // Показываем случайную карточку из пула
+      const idx = frame % pool.length
+      setCurrent(pool[idx])
+
+      if (frame >= TOTAL_FRAMES) {
+        // Финал — всегда показываем победителя
+        setCurrent(winner)
+        setChosen(winner)
+        setSpinning(false)
+        return
+      }
+
+      // Замедление в конце
+      const remaining = TOTAL_FRAMES - frame
+      let delay = BASE_INTERVAL
+      if (remaining <= SLOWDOWN_START) {
+        delay = BASE_INTERVAL + (SLOWDOWN_START - remaining + 1) * 60
+      }
+
+      timerRef.current = setTimeout(tick, delay)
     }
 
-    tick(INTERVAL_MS)
+    timerRef.current = setTimeout(tick, BASE_INTERVAL)
   }, [movies, spinning])
 
   if (!movies.length) return null
@@ -96,20 +103,19 @@ function LuckyPick({ movies }) {
                 className={styles.cardPoster}
                 draggable={false}
                 onError={(e) => {
-                  e.target.src = `https://placehold.co/200x300/1a1a2e/e8a020?text=${encodeURIComponent(displayCard.title.slice(0,10))}`
+                  e.target.src = `https://placehold.co/160x230/1a1a2e/e8a020?text=${encodeURIComponent(displayCard.title.slice(0, 10))}`
                 }}
               />
               <div className={styles.cardOverlay}>
                 <span className={styles.cardTitle}>{displayCard.title}</span>
               </div>
-              {/* Декоративные карточки позади */}
               <div className={styles.cardBack1} />
               <div className={styles.cardBack2} />
             </>
           )}
         </div>
 
-        {/* Кнопка */}
+        {/* Кнопка и статус */}
         <div className={styles.controls}>
           <button
             className={`${styles.btn} ${spinning ? styles.btnSpinning : ''}`}
@@ -125,10 +131,9 @@ function LuckyPick({ movies }) {
             )}
           </button>
 
-          {/* Прогресс-точки */}
           {spinning && (
             <div className={styles.dots}>
-              {[0,1,2].map(i => (
+              {[0, 1, 2].map(i => (
                 <span key={i} className={`${styles.dot} ${styles[`dot${i}`]}`} />
               ))}
             </div>
@@ -136,7 +141,7 @@ function LuckyPick({ movies }) {
         </div>
       </div>
 
-      {/* Результат */}
+      {/* Результат — показывается только когда НЕ крутится */}
       {chosen && !spinning && (
         <div className={styles.result} key={chosen.id}>
           <img

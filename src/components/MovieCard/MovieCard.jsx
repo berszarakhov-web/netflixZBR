@@ -38,7 +38,7 @@ function MovieCard({ movie }) {
         </div>
 
         <div onClick={(e) => e.stopPropagation()}>
-          <BookmarkButton movieId={movie.id} />
+          <BookmarkButton movieId={movie.id} movieTitle={movie.title} />
         </div>
       </div>
 

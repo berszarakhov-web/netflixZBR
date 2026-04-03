@@ -157,7 +157,7 @@ function Movie() {
             <div className={styles.actions}>
               <button className={styles.btnPlay} onClick={handleTrailerOpen}>▶ Смотреть</button>
               <div className={styles.bookmarkWrap}>
-                <BookmarkButton movieId={movie.id} />
+                <BookmarkButton movieId={movie.id} movieTitle={movie.title} />
               </div>
               <button className={styles.btnBack} onClick={() => navigate(-1)}>← Назад</button>
             </div>

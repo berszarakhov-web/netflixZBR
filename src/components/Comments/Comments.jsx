@@ -2,16 +2,17 @@ import { useState, useEffect } from 'react'
 import { useComments } from '../../context/CommentsContext'
 import { useAuth } from '../../context/AuthContext'
 import { useNavigate } from 'react-router-dom'
+import { useToast } from '../Toast/Toast'
 import styles from './Comments.module.css'
 
 function Comments({ movieId }) {
   const { getComments, addComment, deleteComment, getCachedComments } = useComments()
   const { currentUser } = useAuth()
   const navigate = useNavigate()
-  const [text, setText] = useState('')
-  const [loading, setLoading] = useState(false)
+  const { show } = useToast()
+  const [text, setText]         = useState('')
+  const [loading, setLoading]   = useState(false)
   const [fetchError, setFetchError] = useState(false)
-  const [submitError, setSubmitError] = useState('')
   const [deletingId, setDeletingId] = useState(null)
 
   const comments = getCachedComments(movieId)
@@ -22,15 +23,15 @@ function Comments({ movieId }) {
   }, [movieId])
 
   const handleSubmit = async () => {
-    if (!currentUser) { navigate('/login'); return }
+    if (!currentUser) { show('Войдите, чтобы оставить комментарий', 'info'); navigate('/login'); return }
     if (!text.trim()) return
     setLoading(true)
-    setSubmitError('')
     try {
       await addComment(movieId, text.trim(), null)
       setText('')
+      show('Комментарий добавлен ✓', 'success')
     } catch (e) {
-      setSubmitError(e.message || 'Ошибка отправки')
+      show(e.message || 'Ошибка отправки', 'error')
     } finally {
       setLoading(false)
     }
@@ -40,8 +41,9 @@ function Comments({ movieId }) {
     setDeletingId(commentId)
     try {
       await deleteComment(commentId, movieId)
+      show('Комментарий удалён', 'info')
     } catch (e) {
-      console.error('Ошибка удаления:', e.message)
+      show('Не удалось удалить', 'error')
     } finally {
       setDeletingId(null)
     }
@@ -57,7 +59,6 @@ function Comments({ movieId }) {
         <span className={styles.count}>{comments.length}</span>
       </h3>
 
-      {/* Форма */}
       <div className={styles.form}>
         <textarea
           className={styles.textarea}
@@ -78,18 +79,14 @@ function Comments({ movieId }) {
             {loading ? 'Отправка...' : 'Отправить'}
           </button>
         </div>
-        {/* Ошибка отправки */}
-        {submitError && <div className={styles.submitError}>{submitError}</div>}
       </div>
 
-      {/* Ошибка загрузки */}
       {fetchError && (
         <div className={styles.fetchError}>
           Не удалось загрузить комментарии. Проверьте подключение к серверу.
         </div>
       )}
 
-      {/* Список */}
       {!fetchError && comments.length === 0 ? (
         <div className={styles.empty}>Будьте первым, кто оставит отзыв!</div>
       ) : (
@@ -105,13 +102,12 @@ function Comments({ movieId }) {
                       day: 'numeric', month: 'short', year: 'numeric'
                     })}
                   </span>
-                  {/* Кнопка удаления только для автора */}
                   {currentUser && currentUser._id === c.user && (
                     <button
                       className={styles.deleteBtn}
                       onClick={() => handleDelete(c._id)}
                       disabled={deletingId === c._id}
-                      title="Удалить комментарий"
+                      title="Удалить"
                     >
                       {deletingId === c._id ? '...' : '✕'}
                     </button>
