@@ -1,18 +1,17 @@
 {
   "name": "timeline-backend",
-  "private": true,
   "version": "1.0.0",
-  "description": "Timeline streaming platform backend",
-  "type": "module",
+  "description": "Timeline streaming API backend",
+  "main": "project/backend/server.js",
   "scripts": {
+    "start": "node project/backend/server.js",
     "dev": "cd project/backend && npm run dev",
     "build": "cd project/backend && npm install",
-    "start": "node project/backend/server.js",
     "seed": "cd project/backend && node seed.js",
     "seed:admin": "cd project/backend && node createAdmin.js"
   },
   "engines": {
     "node": ">=18.0.0"
   },
-  "keywords": ["timeline", "streaming", "movies", "backend"]
+  "keywords": ["timeline", "api", "backend", "movies"]
 }

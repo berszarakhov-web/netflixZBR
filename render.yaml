@@ -2,7 +2,7 @@ services:
   - type: web
     name: timeline-api
     env: node
-    plan: starter
+    plan: free
     region: singapore
     buildCommand: npm run build
     startCommand: npm start
