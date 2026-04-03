@@ -20,13 +20,25 @@ connectDB()
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
+  'https://timeline-app.vercel.app',  // Vercel production
   process.env.FRONTEND_URL || ''
 ].filter(Boolean)
 
-app.use(cors({
-  origin: allowedOrigins,
-  credentials: true,
-}))
+// Также разреши любые vercel.app домены для preview deploys
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true)
+    } else if (origin && origin.includes('vercel.app')) {
+      callback(null, true)  // Разрешить все vercel.app домены
+    } else {
+      callback(new Error('Not allowed by CORS'))
+    }
+  },
+  credentials: true
+}
+
+app.use(cors(corsOptions))
 app.use(express.json({ limit: '5mb' }))  // 5mb — для base64 аватаров
 app.use(express.urlencoded({ extended: true }))
 
