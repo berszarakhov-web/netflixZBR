@@ -46,62 +46,19 @@ app.use('/api/comments',  commentRoutes)
 app.use('/api/ratings',   ratingRoutes)
 app.use('/api/admin',     adminRoutes)
 
-// ── Раздача статических файлов фронтенда ─────────────────────────
-const fs = require('fs')
+// ── Проверочный маршрут (API статус) ──────────────────────────
+app.get('/api/status', (_req, res) => {
+  res.json({
+    message: 'TimeLine API работает ✅',
+    version: '2.0.0',
+    environment: process.env.NODE_ENV || 'development',
+    timestamp: new Date().toISOString()
+  })
+})
 
-// Попробовать разные пути где может быть dist
-const possiblePaths = [
-  path.join(__dirname, '../frontend/dist'),           // Обычный путь
-  path.join(__dirname, '../../project/frontend/dist'), // Если __dirname неправильный
-  path.join(process.cwd(), 'project/frontend/dist'),  // Из текущего рабочего каталога
-]
-
-let frontendBuildPath = null
-for (const p of possiblePaths) {
-  if (fs.existsSync(p)) {
-    frontendBuildPath = p
-    console.log(`✅ Frontend dist найден по пути: ${p}`)
-    break
-  }
-}
-
-const distExists = frontendBuildPath && fs.existsSync(frontendBuildPath)
-
-if (distExists) {
-  app.use(express.static(frontendBuildPath))
-  console.log(`✅ Static files middleware активирован для: ${frontendBuildPath}`)
-} else {
-  console.warn(`⚠️  Frontend dist не найден. Проверенные пути:`)
-  possiblePaths.forEach(p => console.warn(`   - ${p}`))
-  console.warn(`   CWD: ${process.cwd()}`)
-  console.warn(`   __dirname: ${__dirname}`)
-}
-
-// ── Обслуживание React SPA (catch-all для React Router) ──────────
-app.get('*', (req, res) => {
-  if (!frontendBuildPath || !distExists) {
-    return res.status(503).json({
-      message: 'Frontend не собран. Выполните: npm run build',
-      info: {
-        cwd: process.cwd(),
-        __dirname,
-        checked_paths: possiblePaths
-      }
-    })
-  }
-
-  const indexPath = path.join(frontendBuildPath, 'index.html')
-  
-  // Проверяем, существует ли файл перед отправкой
-  if (!fs.existsSync(indexPath)) {
-    console.error(`❌ index.html не найден в ${indexPath}`)
-    return res.status(503).json({
-      message: 'Frontend не собран корректно. Отсутствует index.html',
-      expected: indexPath
-    })
-  }
-
-  res.sendFile(indexPath)
+// ── 404 для неизвестных маршрутов ─────────────────────────────
+app.use((_req, res) => {
+  res.status(404).json({ message: 'Маршрут не найден' })
 })
 
 // ── Глобальная обработка ошибок ──────────────────────────────────
@@ -123,11 +80,9 @@ const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n${'='.repeat(60)}`)
-  console.log(`🚀 Server running on port: ${PORT}`)
+  console.log(`🚀 TimeLine API running on port: ${PORT}`)
   console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`)
-  console.log(`� Working directory (cwd): ${process.cwd()}`)
-  console.log(`📁 Server directory (__dirname): ${__dirname}`)
-  console.log(`📂 Frontend dist: ${frontendBuildPath || 'NOT FOUND'}`)
-  console.log(`✅ Static files ready: ${distExists ? 'YES' : 'NO'}`)
+  console.log(`📊 API URL: http://localhost:${PORT}/api`)
+  console.log(`📋 Status: http://localhost:${PORT}/api/status`)
   console.log(`${'='.repeat(60)}\n`)
 });

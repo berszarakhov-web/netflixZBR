@@ -1,11 +1,11 @@
 services:
   - type: web
-    name: timeline-app
+    name: timeline-api
     env: node
     plan: starter
     region: singapore
-    buildCommand: npm run build:frontend && npm run build:backend
-    startCommand: node project/backend/server.js
+    buildCommand: npm run build
+    startCommand: npm start
     envVars:
       - key: NODE_ENV
         value: production
@@ -15,5 +15,3 @@ services:
         scope: secret
       - key: JWT_SECRET
         scope: secret
-      - key: FRONTEND_URL
-        value: https://timeline-app.onrender.com
