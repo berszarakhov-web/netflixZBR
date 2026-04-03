@@ -47,24 +47,46 @@ app.use('/api/ratings',   ratingRoutes)
 app.use('/api/admin',     adminRoutes)
 
 // ── Раздача статических файлов фронтенда ─────────────────────────
-const frontendBuildPath = path.join(__dirname, '../frontend/dist')
 const fs = require('fs')
 
-// Проверка наличия dist папки при старте
-const distExists = fs.existsSync(frontendBuildPath)
+// Попробовать разные пути где может быть dist
+const possiblePaths = [
+  path.join(__dirname, '../frontend/dist'),           // Обычный путь
+  path.join(__dirname, '../../project/frontend/dist'), // Если __dirname неправильный
+  path.join(process.cwd(), 'project/frontend/dist'),  // Из текущего рабочего каталога
+]
+
+let frontendBuildPath = null
+for (const p of possiblePaths) {
+  if (fs.existsSync(p)) {
+    frontendBuildPath = p
+    console.log(`✅ Frontend dist найден по пути: ${p}`)
+    break
+  }
+}
+
+const distExists = frontendBuildPath && fs.existsSync(frontendBuildPath)
+
 if (distExists) {
-  console.log(`✅ Frontend dist найден: ${frontendBuildPath}`)
   app.use(express.static(frontendBuildPath))
+  console.log(`✅ Static files middleware активирован для: ${frontendBuildPath}`)
 } else {
-  console.warn(`⚠️  Frontend dist не найден: ${frontendBuildPath}`)
+  console.warn(`⚠️  Frontend dist не найден. Проверенные пути:`)
+  possiblePaths.forEach(p => console.warn(`   - ${p}`))
+  console.warn(`   CWD: ${process.cwd()}`)
+  console.warn(`   __dirname: ${__dirname}`)
 }
 
 // ── Обслуживание React SPA (catch-all для React Router) ──────────
 app.get('*', (req, res) => {
-  if (!distExists) {
+  if (!frontendBuildPath || !distExists) {
     return res.status(503).json({
       message: 'Frontend не собран. Выполните: npm run build',
-      path: frontendBuildPath
+      info: {
+        cwd: process.cwd(),
+        __dirname,
+        checked_paths: possiblePaths
+      }
     })
   }
 
@@ -103,7 +125,9 @@ app.listen(PORT, '0.0.0.0', () => {
   console.log(`\n${'='.repeat(60)}`)
   console.log(`🚀 Server running on port: ${PORT}`)
   console.log(`📝 Environment: ${process.env.NODE_ENV || 'development'}`)
-  console.log(`📂 Frontend build path: ${frontendBuildPath}`)
-  console.log(`✅ Frontend dist exists: ${distExists}`)
+  console.log(`� Working directory (cwd): ${process.cwd()}`)
+  console.log(`📁 Server directory (__dirname): ${__dirname}`)
+  console.log(`📂 Frontend dist: ${frontendBuildPath || 'NOT FOUND'}`)
+  console.log(`✅ Static files ready: ${distExists ? 'YES' : 'NO'}`)
   console.log(`${'='.repeat(60)}\n`)
 });
